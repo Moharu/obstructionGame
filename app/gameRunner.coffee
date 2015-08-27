@@ -2,7 +2,7 @@ _ = require 'underscore'
 
 class GameRunner
 
-    clearGameBoard: () ->
+    newGameBoard: () ->
         gameBoard = [
             new Array(6)
             new Array(6)
@@ -33,6 +33,12 @@ class GameRunner
         return false unless validateMove boardState
         return makeMove move, identifier, boardState
 
+    anyValidMove: (boardState) ->
+        for i in [0..5]
+            for j in [0..5]
+                unless boardState[i][j]?
+                    return true if @validateMove [i,j], boardState
+        false
 
 module.exports = GameRunner
 
