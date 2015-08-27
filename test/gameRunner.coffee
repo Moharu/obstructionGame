@@ -60,5 +60,3 @@ describe 'The Game Runner', ->
             instance = new GameRunner
             isValidMove = instance.validateMove [0,0], initialBoard
             expect(isValidMove).not.to.be.ok()
-
-    describe 'any valid move'

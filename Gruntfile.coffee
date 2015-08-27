@@ -6,15 +6,13 @@ module.exports = (grunt) ->
             progress:
                 options:
                     reporter: 'progress'
-                    require: ['coffee-script/register', 'blanket']
-                    captureFile: 'mochaTest.log'
+                    require: ['coffee-script/register']
                     quiet: false,
-                    clearRequireCache: false
                 src: ['test/**/*.coffee']
             spec:
                 options:
                     reporter: 'spec'
-                    require: ['coffee-script/register', 'blanket']
+                    require: ['coffee-script/register']
                     captureFile: 'mochaTest.log'
                     quiet: false,
                     clearRequireCache: false
@@ -28,7 +26,8 @@ module.exports = (grunt) ->
 
     grunt.initConfig config
 
-    require('load-grunt-tasks')(grunt)
+    grunt.loadNpmTasks 'grunt-contrib-watch'
+    grunt.loadNpmTasks 'grunt-mocha-test'
 
     grunt.registerTask 'default', 'Watch', ->
         grunt.task.run 'watch'
