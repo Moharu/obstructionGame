@@ -52,5 +52,15 @@ class GameRunner
                     return true if @validateMove [i,j], boardState
         false
 
+    allValidMoves: (boardState) ->
+        validMoves = []
+        lenghtX = boardState.length - 1
+        lenghtY = boardState[0].length - 1
+        for i in [0..lenghtX]
+            for j in [0..lenghtY]
+                if boardState[i][j] is '-'
+                    validMoves.push [i,j] if @validateMove [i,j], boardState
+        validMoves
+
 module.exports = GameRunner
 

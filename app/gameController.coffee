@@ -4,7 +4,7 @@ prompt = require 'prompt'
 
 class GameController
 
-    playGame: (player1, player2, size) ->
+    playGame: (player1, player2, size, @gameCallback) ->
         prompt.start()
         @gameRunner = new GameRunner
         @game =
@@ -19,57 +19,60 @@ class GameController
 
     player1MoveCallback: (playerMove) =>
         unless @validateInput playerMove
-            @game.log.push "player1 invalid input! player2 wins"
-            @game.winner = 'player2'
+            @game.log.push "#{@game.player1.name} invalid input! #{@game.player2.name} wins"
+            @game.winner = "#{@game.player2.name}"
             return @finishGame @game
-        @game.log.push "player1 move: #{playerMove[1]}, #{playerMove[0]}"
-        turnResult = @gameRunner.playerTurn playerMove, '1', @game.board
+        @game.log.push "#{@game.player1.name} move: #{playerMove[1]}, #{playerMove[0]}"
+        turnResult = @gameRunner.playerTurn playerMove, @game.player1.id, @game.board
         if turnResult.msg is 'Invalid move.'
-            @game.log.push "player 1 invalid move! player2 wins"
-            @game.winner = 'player2'
+            @game.log.push "#{@game.player1.name} invalid move! #{@game.player2.name} wins"
+            @game.winner = "#{@game.player2.name}"
             return @finishGame @game
         @game.board = turnResult.board
         @game.log.push "board after move:"
         @game.log.push @game.board
         if turnResult.msg is 'No more valid moves.'
-            @game.log.push "No more valid moves, player 1 wins!"
-            @game.winner = 'player1'
+            @game.log.push "No more valid moves, #{@game.player1.name} wins!"
+            @game.winner = "#{@game.player1.name}"
             return @finishGame @game
         @askPlayerMove @game.player2, @game.board, @player2MoveCallback
 
     player2MoveCallback: (playerMove) =>
         unless @validateInput playerMove
-            @game.log.push "player2 invalid input! player1 wins"
-            @game.winner = 'player1'
+            @game.log.push "#{@game.player2.name} invalid input! #{@game.player1.name} wins"
+            @game.winner = "#{@game.player1.name}"
             return @finishGame @game
-        @game.log.push "player2 move: #{playerMove[1]}, #{playerMove[0]}"
-        turnResult = @gameRunner.playerTurn playerMove, '2', @game.board
+        @game.log.push "#{@game.player2.name} move: #{playerMove[1]}, #{playerMove[0]}"
+        turnResult = @gameRunner.playerTurn playerMove, @game.player2.id, @game.board
         if turnResult.msg is 'Invalid move.'
-            @game.log.push "player 2 invalid move! player1 wins"
-            @game.winner = 'player1'
+            @game.log.push "#{@game.player2.name} invalid move! #{@game.player1.name} wins"
+            @game.winner = "#{@game.player1.name}"
             return @finishGame @game
         @game.board = turnResult.board
         @game.log.push "board after move:"
         @game.log.push @game.board
         if turnResult.msg is 'No more valid moves.'
-            @game.log.push "No more valid moves, player 2 wins!"
-            @game.winner = 'player2'
+            @game.log.push "No more valid moves, #{@game.player2.name} wins!"
+            @game.winner = "#{@game.player2.name}"
             return @finishGame @game
         @askPlayerMove @game.player1, @game.board, @player1MoveCallback
 
     askPlayerMove: (player, board, callback) ->
-        console.log "#{player.name} move! The board looks like this:"
-        console.log board
-        prompt.get ['x', 'y'], (err, result) ->
+
+        player.client.post '/obstruction', board, (err, req, res, obj) ->
             return console.log 'deu merda' if err?
-            callback [result.y, result.x]
+            res = JSON.parse res.body
+            callback res
 
     finishGame: (game) ->
         console.log game.log
+        final =
+            winner: game.winner
+            log: game.log
+        @gameCallback final
 
     validateInput: (input) ->
         return false unless Array.isArray input
         input.length is 2
-
 
 module.exports = GameController
