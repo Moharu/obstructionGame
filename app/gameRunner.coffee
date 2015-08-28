@@ -2,15 +2,16 @@ _ = require 'underscore'
 
 class GameRunner
 
-    newGameBoard: () ->
-        gameBoard = [
-            ['-','-','-','-','-','-']
-            ['-','-','-','-','-','-']
-            ['-','-','-','-','-','-']
-            ['-','-','-','-','-','-']
-            ['-','-','-','-','-','-']
-            ['-','-','-','-','-','-']
-        ]
+    newGameBoard: (size) ->
+        unless Array.isArray size
+            aux = [size, size]
+            size = aux
+        gameBoard = []
+        line = []
+        for i in [1..size[0]]
+            line.push '-'
+        for i in [1..size[1]]
+            gameBoard.push line
         gameBoard = JSON.parse JSON.stringify gameBoard
 
     makeMove: (move, identifier, boardState) ->
@@ -19,13 +20,15 @@ class GameRunner
         newBoard
 
     validateMove: (move, boardState) ->
+        lenghtX = boardState.length - 1
+        lenghtY = boardState[0].length - 1
         return false if boardState[move[0]][move[1]] isnt '-'
         for i in [0..2]
             for j in [0..2]
                 unless (i is 1) and (j is 1)
                     testX = move[0]-1+i
                     testY = move[1]-1+j
-                    if ((testX >= 0) and (testX <= 5)) and ((testY >= 0) and (testY <= 5))
+                    if ((testX >= 0) and (testX <= lenghtX)) and ((testY >= 0) and (testY <= lenghtY))
                         return false if boardState[testX][testY] isnt '-'
         return true
 
@@ -41,8 +44,10 @@ class GameRunner
         return game
 
     anyValidMove: (boardState) ->
-        for i in [0..5]
-            for j in [0..5]
+        lenghtX = boardState.length - 1
+        lenghtY = boardState[0].length - 1
+        for i in [0..lenghtX]
+            for j in [0..lenghtY]
                 if boardState[i][j] is '-'
                     return true if @validateMove [i,j], boardState
         false

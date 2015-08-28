@@ -4,11 +4,11 @@ prompt = require 'prompt'
 
 class GameController
 
-    playGame: (player1, player2) ->
+    playGame: (player1, player2, size) ->
         prompt.start()
         @gameRunner = new GameRunner
         @game =
-            board: @gameRunner.newGameBoard()
+            board: @gameRunner.newGameBoard(size)
             log: []
             winner: null
             player1: player1
@@ -22,7 +22,7 @@ class GameController
             @game.log.push "player1 invalid input! player2 wins"
             @game.winner = 'player2'
             return @finishGame @game
-        @game.log.push "player1 move: #{playerMove}"
+        @game.log.push "player1 move: #{playerMove[1]}, #{playerMove[0]}"
         turnResult = @gameRunner.playerTurn playerMove, '1', @game.board
         if turnResult.msg is 'Invalid move.'
             @game.log.push "player 1 invalid move! player2 wins"
@@ -42,7 +42,7 @@ class GameController
             @game.log.push "player2 invalid input! player1 wins"
             @game.winner = 'player1'
             return @finishGame @game
-        @game.log.push "player2 move: #{playerMove}"
+        @game.log.push "player2 move: #{playerMove[1]}, #{playerMove[0]}"
         turnResult = @gameRunner.playerTurn playerMove, '2', @game.board
         if turnResult.msg is 'Invalid move.'
             @game.log.push "player 2 invalid move! player1 wins"
@@ -61,6 +61,7 @@ class GameController
         console.log "#{player.name} move! The board looks like this:"
         console.log board
         prompt.get ['x', 'y'], (err, result) ->
+            return console.log 'deu merda' if err?
             callback [result.y, result.x]
 
     finishGame: (game) ->

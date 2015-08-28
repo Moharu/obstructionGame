@@ -5,4 +5,4 @@ player1 =
     name: 'Joao'
 player2 =
     name: 'Japao'
-instance.playGame player1, player2
+instance.playGame player1, player2, 7
