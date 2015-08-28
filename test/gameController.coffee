@@ -5,4 +5,6 @@ describe 'The GameController', ->
 
     describe 'gameRound method', ->
 
-        it 'should do stuff'
+        it 'should do stuff', ->
+            instance = new GameController
+            instance.playGame()
