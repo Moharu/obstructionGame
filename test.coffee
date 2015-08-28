@@ -14,7 +14,7 @@ server.post '/obstruction', (req, res, next) ->
     response = moves[rndIndex]
     res.json response
 
-# each player must have name, id and url
+# each player must have name, id and url, also must send size with the grid spec
 server.post '/play/obstruction', (req, res, next) ->
     instance = new GameController
     player1 = req.body.player1
