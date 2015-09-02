@@ -5,6 +5,7 @@ restify = require 'restify'
 gameRunnerInstance = new GameRunner
 
 server = restify.createServer()
+server.use restify.CORS()
 server.use restify.bodyParser(mapParams: false)
 
 # Own random player

@@ -60,7 +60,7 @@ class GameController
     askPlayerMove: (player, board, callback) ->
 
         player.client.post '/obstruction', board, (err, req, res, obj) ->
-            return console.log 'deu merda' if err?
+            return console.log err if err?
             res = JSON.parse res.body
             callback res
 
